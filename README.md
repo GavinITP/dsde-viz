@@ -4,18 +4,18 @@
    [https://github.com/PunnyOz2/DS_DE_FinalProject](https://github.com/PunnyOz2/DS_DE_FinalProject.git)
 
 3. Set up a virtual environment (optional but recommended)
-   ```python
+   ```shell
    # create a virtual environment
    python3 -m venv .venv
    ```
 
-   ```python
+   ```shell
    # activate a virtual environment
    # on MacOS or Linux
    source .venv/bin/activate
     ```
 4. Install all the necessary packages
-   ```python
+   ```shell
    pip install redis
    pip install numpy
    pip install pandas
@@ -25,7 +25,7 @@
    pip install pydeck
    ```
 5. Run the project using Streamlit 🎉
-   ```python
+   ```shell
    streamlit run main.py
    # then access your localhost
    ```

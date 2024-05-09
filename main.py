@@ -3,6 +3,7 @@ from localhost_redis import (
     references_dataframe,
     affiliations_dataframe,
     get_city_aff_count,
+    removeOutlier,
 )
 import pandas as pd
 import plotly.graph_objects as go
@@ -11,10 +12,11 @@ import pydeck as pdk
 
 def ref_page(selected_year):
     st.markdown("# References Analysis")
-
     # data
     ref_df = references_dataframe(selected_year)
     ref_count = ref_df.groupby("eid").size().value_counts().sort_index()
+
+    ref_count = removeOutlier(ref_count)
 
     # bar chart
     if selected_year != "all":
@@ -48,6 +50,7 @@ def ref_page(selected_year):
     fig.update_layout(
         title="", xaxis_title="Number of References", yaxis_title="Paper count"
     )
+
     st.plotly_chart(fig)
 
     ########################################
@@ -62,6 +65,8 @@ def ref_page(selected_year):
         )
 
     ref_year_count = ref_df.groupby("year").size().sort_index()
+
+    print(ref_year_count)
 
     year = ref_year_count.index.tolist()
     count_references = ref_year_count.values.tolist()
@@ -185,6 +190,8 @@ def aff_page(selected_year):
     # data
     aff_df = affiliations_dataframe(selected_year)
     aff_count = aff_df.groupby("eid").size().value_counts().sort_index()
+
+    aff_count = removeOutlier(aff_count)
 
     number_of_affiliations = aff_count.index.tolist()
     paper_count = aff_count.values.tolist()

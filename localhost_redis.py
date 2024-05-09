@@ -55,3 +55,28 @@ def get_city_aff_count(year="all"):
     grouped_df = grouped_df[grouped_df["city"] != ""]
 
     return grouped_df
+
+
+# Remove outlier
+def removeOutlier(serie):
+    # convert serie index to int
+    indexes = pd.Series(serie.index).astype(int)
+    # print(indexes)
+    q1 = indexes.quantile(0.25)
+    q3 = indexes.quantile(0.75)
+    iqr = q3 - q1
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+
+    if serie.index.dtype == "object":
+        indexes = indexes.loc[
+            (indexes >= lower_bound) & (indexes <= upper_bound)
+        ].astype(str)
+    else:
+        indexes = indexes.loc[
+            (indexes >= lower_bound) & (indexes <= upper_bound)
+        ].astype(serie.index.dtype)
+    # print(indexes)
+
+    # return only the values that are in the indexes
+    return serie.loc[indexes]

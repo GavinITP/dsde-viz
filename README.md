@@ -5,27 +5,18 @@
 
 3. Set up a virtual environment (optional but recommended)
    ```shell
-   # create a virtual environment
    python3 -m venv .venv
    ```
 
    ```shell
-   # activate a virtual environment
-   # on MacOS or Linux
+   # activate a virtual environment on MacOS or Linux
    source .venv/bin/activate
     ```
 4. Install all the necessary packages
    ```shell
-   pip install redis
-   pip install numpy
-   pip install pandas
-   pip install geopy
-   pip install streamlit
-   pip install plotly
-   pip install pydeck
+   pip install redis pandas geopy streamlit plotly pydeck watchdog
    ```
 5. Run the project using Streamlit 🎉
    ```shell
    streamlit run main.py
-   # then access your localhost
    ```

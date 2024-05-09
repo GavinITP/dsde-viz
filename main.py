@@ -2,10 +2,9 @@ import streamlit as st
 from localhost_redis import (
     references_dataframe,
     affiliations_dataframe,
-    get_country_aff_count,
+    get_city_aff_count,
 )
 import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
 import pydeck as pdk
 
@@ -133,15 +132,18 @@ def ref_page(selected_year):
 
 def aff_page(selected_year):
     st.markdown("# Affiliations Analysis")
-    country_counts_df = get_country_aff_count(selected_year)
+    city_count_df = get_city_aff_count(selected_year)
 
-    country_counts_df = (
-        country_counts_df[["country", "count"]].head(3).reset_index(drop=True)
+    city_count_top_df = (
+        city_count_df[["city", "count"]]
+        .sort_values("count", ascending=False)
+        .head(3)
+        .reset_index(drop=True)
     )
-    country_counts_df.index += 1
+    city_count_top_df.index += 1
 
-    st.text("Top 3 association country")
-    st.write(country_counts_df[["country", "count"]].head(3))
+    st.text("Top 3 association city")
+    st.write(city_count_top_df[["city", "count"]].head(3))
 
     # geo map
     st.markdown("#### Association map")
@@ -157,12 +159,12 @@ def aff_page(selected_year):
             layers=[
                 pdk.Layer(
                     "ColumnLayer",
-                    data=country_counts_df,
+                    data=city_count_df,
                     get_position="[longitude, latitude]",
                     get_elevation="count",
-                    elevation_scale=800,
+                    elevation_scale=200,
                     get_fill_color="[200, 30, 0, 160]",
-                    radius=100000,
+                    radius=20000,
                     pickable=True,
                     extruded=True,
                 )

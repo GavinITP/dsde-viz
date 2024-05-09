@@ -1,8 +1,6 @@
 import redis
 import json
 import pandas as pd
-import time
-from geopy.geocoders import Nominatim
 
 r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
 
@@ -46,32 +44,14 @@ def affiliations_dataframe(year="all"):
     return pd.DataFrame(all_affiliations)
 
 
-def get_country_aff_count(year="all"):
+def get_city_aff_count(year="all"):
     aff_df = affiliations_dataframe(year)
-    country_counts = aff_df.groupby(["country"]).size().iloc[1:]
-    country_counts_df = country_counts.to_frame().reset_index()
-    country_counts_df.columns = ["country", "count"]
-
-    country_counts_df = country_counts_df.iloc[:].sort_values(
-        by="count", ascending=False
+    grouped_df = (
+        aff_df.groupby("city")
+        .agg({"eid": "count", "latitude": "first", "longitude": "first"})
+        .reset_index()
     )
+    grouped_df.columns = ["city", "count", "latitude", "longitude"]
+    grouped_df = grouped_df[grouped_df["city"] != ""]
 
-    geolocator = Nominatim(user_agent="my-geoapi-application")
-
-    for index, row in country_counts_df.iterrows():
-        # some country name may not be recognized by geopy
-        try:
-            country = row["country"]
-            location = geolocator.geocode(country)
-            if location:
-                country_counts_df.at[index, "latitude"] = location.latitude
-                country_counts_df.at[index, "longitude"] = location.longitude
-            else:
-                country_counts_df.at[index, "latitude"] = None
-                country_counts_df.at[index, "longitude"] = None
-        except:
-            country_counts_df.at[index, "latitude"] = None
-            country_counts_df.at[index, "longitude"] = None
-            continue
-
-    return country_counts_df.dropna()
+    return grouped_df

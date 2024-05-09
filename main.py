@@ -1,13 +1,14 @@
 import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+import pydeck as pdk
+
 from localhost_redis import (
     references_dataframe,
     affiliations_dataframe,
     get_city_aff_count,
     removeOutlier,
 )
-import pandas as pd
-import plotly.graph_objects as go
-import pydeck as pdk
 
 
 def ref_page(selected_year):
@@ -66,10 +67,9 @@ def ref_page(selected_year):
 
     ref_year_count = ref_df.groupby("year").size().sort_index()
 
-    print(ref_year_count)
-
     year = ref_year_count.index.tolist()
     count_references = ref_year_count.values.tolist()
+
     # bar chart
     data = pd.DataFrame(
         {
